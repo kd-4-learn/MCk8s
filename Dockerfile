@@ -1,5 +1,5 @@
 # ベースイメージとしてJava 17が使える公式イメージを選択
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 
 # 環境変数（サーバーのバージョンやメモリ割り当てなどをここで管理）
 ENV MC_VERSION="1.21"
