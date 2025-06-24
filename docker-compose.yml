@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  minecraft:
+    # Dockerfileからイメージをビルドして使う場合
+    build: .
+    # CI/CDでレジストリにプッシュしたイメージを使う場合（後述）
+    # image: your-dockerhub-username/minecraft-server:latest
+    container_name: minecraft-server
+    restart: unless-stopped
+
+    # ポートのマッピング (ホスト側:コンテナ側)
+    ports:
+      - "25565:25565"
+
+    # 環境変数 (Dockerfileのデフォルト値を上書き可能)
+    environment:
+      - JVM_OPTS=-Xms2G -Xmx4G
+
+    # データの永続化設定
+    volumes:
+      # ホストの./mc-data/worldをコンテナの/server/worldにマウント
+      - ./mc-data/world:/server/world
+      - ./mc-data/plugins:/server/plugins
+      - ./mc-data/server.properties:/server/server.properties
+      # ...その他必要なファイルやディレクトリも同様にマウント
