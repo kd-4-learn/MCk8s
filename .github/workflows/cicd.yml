@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # ここにマニフェストを管理しているリポジトリを指定
-          repository: your-username/my-k8s-manifests
+          repository: RyoNagashiro9280/k8s-manifest.git
           # マニフェストリポジトリにプッシュするためのトークン
           token: ${{ secrets.MANIFEST_REPO_ACCESS_TOKEN }}
 
