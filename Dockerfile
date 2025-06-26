@@ -1,32 +1,38 @@
-# ベースイメージとしてJava 17が使える公式イメージを選択
-FROM eclipse-temurin:21-jre-jammy
+# SpigotのビルドにはJREではなくJDKが必要なため、JDKを含むイメージを選択します
+FROM eclipse-temurin:21-jdk-jammy
 
 # 環境変数（サーバーのバージョンやメモリ割り当てなどをここで管理）
-ENV MC_VERSION="1.21"
+ENV MC_VERSION="1.21.6"
 ENV JVM_OPTS="-Xms2G -Xmx4G"
 
 # 作業ディレクトリを設定
 WORKDIR /server
 
-# 必要なツールをインストールし、サーバーjarをダウンロード
-RUN apt-get update && apt-get install -y wget && \
-    wget https://piston-data.mojang.com/v1/objects/6e64dcabba3c01a7271b4fa6bd898483b794c59b/server.jar -O server.jar
+# 必要なツールをインストール (SpigotのBuildToolsはgitを必要とします)
+RUN apt-get update && apt-get install -y wget git
+
+# SpigotのBuildToolsをダウンロードし、Spigotサーバーをビルドします
+# --revでMinecraftのバージョンを指定します
+RUN wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar -O BuildTools.jar && \
+    java -jar BuildTools.jar --rev ${MC_VERSION}
+
+# ビルドされたSpigotサーバーJARを、既存の起動スクリプトが使えるように `server.jar` にリネームします
+# これにより、start.sh を変更する必要がなくなります
+RUN mv spigot-${MC_VERSION}.jar server.jar
 
 # EULA（利用許諾契約）に同意するファイルを作成
-# これがないとサーバーは起動しません
 RUN echo "eula=true" > eula.txt
 
-# 起動スクリプトをコンテナ内にコピー
+# 起動スクリプトをコンテナ内にコピー (既存のフローを維持)
 COPY scripts/start.sh .
 RUN chmod +x start.sh
 
-# サーバーデータ（ワールドなど）を永続化するためのボリュームを指定
-VOLUME /server/world
-# プラグインを入れる場合
-# VOLUME /server/plugins
+# サーバーデータやプラグインを永続化するためのボリュームを指定
+VOLUME ["/server/world", "/server/plugins"]
 
 # ポートを開放
 EXPOSE 25565
 
 # コンテナ起動時に実行するコマンド
 CMD ["./start.sh"]
+
