@@ -63,7 +63,7 @@ jobs:
       - name: Update image tag in deployment.yaml
         uses: mikefarah/yq@v4
         with:
-          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.DOCKERHUB_USERNAME }}/minecraft-server:${{ needs.build-and-push.outputs.image_tag }}"' 'minecraft/deployment.yaml'
+          cmd: yq -i '.spec.template.spec.containers[0].image = "${{ secrets.DOCKERHUB_USERNAME }}/minecraft-server:${{ needs.build-and-push.outputs.image_tag }}"' 'mc-chart/deployment.yaml'
         # 'minecraft/deployment.yaml' の部分は、あなたのマニフェストリポジトリ内のファイルパスに合わせてください
 
       # 3. 変更をコミットしてプッシュ
