@@ -2,14 +2,14 @@
 FROM eclipse-temurin:21-jdk-jammy
 
 # 環境変数（サーバーのバージョンやメモリ割り当てなどをここで管理）
-ENV MC_VERSION="1.21.6"
+ENV MC_VERSION="1.21.1"
 ENV JVM_OPTS="-Xms2G -Xmx4G"
 
 # 作業ディレクトリを設定
 WORKDIR /server
 
 # 必要なツールをインストール (SpigotのBuildToolsはgitを必要とします)
-RUN apt-get update && apt-get install -y wget git
+RUN apt-get update && apt-get install -y wget git dos2unix
 
 # SpigotのBuildToolsをダウンロードし、Spigotサーバーをビルドします
 # --revでMinecraftのバージョンを指定します
@@ -25,6 +25,10 @@ RUN echo "eula=true" > eula.txt
 
 # 起動スクリプトをコンテナ内にコピー (既存のフローを維持)
 COPY scripts/start.sh .
+# 修正点：dos2unixコマンドで、Windowsの改行コード(CRLF)をLinux形式(LF)に変換します
+RUN dos2unix start.sh
+# 実行権限を付与
+RUN chmod +x start.sh
 RUN chmod +x start.sh
 
 # サーバーデータやプラグインを永続化するためのボリュームを指定
