@@ -13,7 +13,7 @@ services:
 
     # 環境変数 (Dockerfileのデフォルト値を上書き可能)
     environment:
-      - JVM_OPTS=-Xms2G -Xmx4G
+      - JVM_OPTS=-Xms8G -Xmx8G
 
     # データの永続化設定
     volumes:

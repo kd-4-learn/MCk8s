@@ -3,7 +3,7 @@ FROM eclipse-temurin:21-jdk-jammy
 
 # 環境変数（サーバーのバージョンやメモリ割り当てなどをここで管理）
 ENV MC_VERSION="1.21.1"
-ENV JVM_OPTS="-Xms2G -Xmx4G"
+ENV JVM_OPTS="-Xms8G -Xmx8G"
 
 # 作業ディレクトリを設定
 WORKDIR /server
